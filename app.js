@@ -166,7 +166,7 @@ function startRegisterFlow() {
             clearInterval(warningTimer);
             btn.disabled = false;
             btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            btn.innerText = "我已确认现任在场";
+            btn.innerText = "我已阅读并确认";
             btn.onclick = () => {
                 closeModal('warning-modal');
                 openModal('transfer-modal');
@@ -207,7 +207,7 @@ async function submitTransfer() {
         logout();
         closeModal('transfer-modal');
         ['old-name', 'old-key', 'new-name', 'new-key'].forEach(id => document.getElementById(id).value = '');
-        alert(`权限移交成功！\n新出纳已更新为：${newName}\n旧密码已永久作废，系统已自动退出登录，请新出纳重新登录。`);
+        alert(`权限移交成功！\n新出纳已更新为：${newName}\n旧密钥已永久作废，系统已自动退出登录，请新出纳重新登录。`);
     }
 }
 

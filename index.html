@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星火社团财务处</title>
+    <title>尚饮社财务管理系统</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -18,7 +18,7 @@
     <main class="flex-grow flex flex-col items-center justify-center p-6 w-full h-full relative z-10 max-w-5xl mx-auto">
         
         <div class="text-center w-full mb-12 relative group">
-            <h1 id="main-title" class="text-5xl md:text-6xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-teal-600 drop-shadow-sm">星火社团财务处</h1>
+            <h1 id="main-title" class="text-5xl md:text-6xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-teal-600 drop-shadow-sm">尚饮社财务管理系统</h1>
             
             <div class="inline-block bg-white/60 backdrop-blur-xl p-12 md:p-16 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.04)] border border-white/80 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative overflow-hidden w-full max-w-2xl">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-50"></div>
@@ -97,7 +97,7 @@
 
     <div id="add-transaction-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center backdrop-blur-md p-4">
         <div class="bg-white/95 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-lg w-full modal-enter max-h-[90vh] overflow-y-auto border border-white">
-            <h3 class="text-2xl font-bold text-slate-800 mb-6">记录财务异动</h3>
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">记录财务变动</h3>
             <div class="space-y-5">
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-1.5">动账金额</label>
@@ -157,7 +157,7 @@
     <div id="warning-modal" class="hidden fixed inset-0 bg-slate-900/40 z-[60] flex items-center justify-center backdrop-blur-md p-4">
         <div class="bg-white/90 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-md w-full modal-enter text-center border border-white">
             <h3 class="text-2xl font-bold text-slate-800 mb-2">不可逆操作警告</h3>
-            <p class="text-slate-500 mb-6">接下来的交接流程将永久废弃当前密钥。<br><span class="font-bold text-rose-500">请确保现任出纳在场协助。</span></p>
+            <p class="text-slate-500 mb-6">接下来的交接流程将永久废弃上一任出纳的唯一密钥。<br><span class="font-bold text-rose-500">请确保交接人在场且社团账目清楚。</span></p>
             <div class="flex gap-4 justify-center">
                 <button onclick="closeModal('warning-modal')" class="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 font-medium">取消</button>
                 <button id="btn-warning-confirm" disabled class="flex-1 py-3 bg-rose-500 text-white rounded-xl opacity-50 cursor-not-allowed font-medium">阅读中 (5)</button>
