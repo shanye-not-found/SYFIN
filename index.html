@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星火社团财务处</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col relative overflow-hidden">
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-indigo-400/20 blur-[100px]"></div>
+        <div class="absolute top-[20%] -right-[10%] w-[40vw] h-[40vw] rounded-full bg-teal-400/20 blur-[100px]"></div>
+        <div class="absolute -bottom-[20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-blue-400/20 blur-[120px]"></div>
+    </div>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-6 w-full h-full relative z-10 max-w-5xl mx-auto">
+        
+        <div class="text-center w-full mb-12 relative group">
+            <h1 id="main-title" class="text-5xl md:text-6xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-teal-600 drop-shadow-sm">星火社团财务处</h1>
+            
+            <div class="inline-block bg-white/60 backdrop-blur-xl p-12 md:p-16 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.04)] border border-white/80 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative overflow-hidden w-full max-w-2xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-50"></div>
+                <p class="text-slate-500 mb-2 font-medium tracking-wide">实时财务结余 (CNY)</p>
+                <div class="text-6xl md:text-8xl font-black text-slate-800 tracking-tighter mb-4" id="display-balance">¥ 0.00</div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
+                    <div class="flex items-center gap-2 text-sm text-indigo-700 bg-indigo-50/80 backdrop-blur-sm py-2 px-5 rounded-full border border-indigo-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        出纳：<span id="display-cashier" class="font-bold">加载中...</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-500 bg-white/50 py-2 px-5 rounded-full border border-slate-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        更新于：<span id="display-time">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl" id="public-actions">
+            <button onclick="openModal('ledger-modal')" class="group relative p-6 bg-white/70 backdrop-blur-md rounded-3xl shadow-sm border border-white/80 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="p-4 bg-blue-100/50 text-blue-600 rounded-2xl group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 z-10">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <span class="font-bold text-slate-700 z-10">查看账目流水</span>
+            </button>
+            <button onclick="handleLoginClick()" id="btn-login" class="group relative p-6 bg-white/70 backdrop-blur-md rounded-3xl shadow-sm border border-white/80 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="p-4 bg-indigo-100/50 text-indigo-600 rounded-2xl group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 z-10">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                </div>
+                <span class="font-bold text-slate-700 z-10">登录账目管理</span>
+            </button>
+            <button onclick="startRegisterFlow()" class="group relative p-6 bg-white/70 backdrop-blur-md rounded-3xl shadow-sm border border-white/80 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-rose-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="p-4 bg-rose-100/50 text-rose-600 rounded-2xl group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 z-10">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                </div>
+                <span class="font-bold text-slate-700 z-10">出纳交接注册</span>
+            </button>
+        </div>
+
+        <div id="admin-actions" class="hidden fixed bottom-8 right-8 bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-white z-20 w-72">
+            <div class="flex items-center gap-2 mb-4 text-indigo-800">
+                <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>
+                <h2 class="font-bold text-lg">账目管理已开启</h2>
+            </div>
+            <button onclick="openModal('add-transaction-modal')" class="w-full mb-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                新增动账记录
+            </button>
+            <button onclick="generateAndShowKey()" class="w-full mb-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-xl transition-all border border-slate-200 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                生成交接密钥
+            </button>
+            <div class="text-center border-t border-slate-100 pt-3">
+                <button onclick="logout()" class="text-slate-400 hover:text-rose-500 text-sm transition-colors font-medium">安全退出登录</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="confirm-tx-modal" class="hidden fixed inset-0 bg-slate-900/60 z-[80] flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full modal-enter text-center border border-white">
+            <div class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">确认入账？</h3>
+            <p class="text-slate-500 mb-6 leading-relaxed">请仔细核对金额与凭证。<br><span class="font-bold text-amber-600">入账之后操作将不可逆转！</span></p>
+            <div class="flex gap-4">
+                <button onclick="closeModal('confirm-tx-modal')" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl hover:bg-slate-200 font-medium">返回修改</button>
+                <button onclick="executeTransaction()" class="flex-1 bg-amber-500 text-white py-3 rounded-xl hover:bg-amber-600 font-bold shadow-md">确认并提交</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-transaction-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white/95 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-lg w-full modal-enter max-h-[90vh] overflow-y-auto border border-white">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">记录财务异动</h3>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">动账金额</label>
+                    <input type="text" id="tx-amount" placeholder="+500.00 (收入) 或 -150.50 (支出)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-lg font-mono text-center focus:bg-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">经手人姓名</label>
+                    <input type="text" id="tx-handler" placeholder="实际购买人 / 报销人" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">备注说明</label>
+                    <textarea id="tx-notes" rows="2" placeholder="资金用途简述" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all text-slate-700 resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">账单证明 (支持多图)</label>
+                    <input type="file" id="tx-images-file" multiple accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 cursor-pointer border border-dashed border-slate-300 p-2 rounded-xl transition-all">
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeModal('add-transaction-modal')" class="flex-1 bg-slate-100 text-slate-600 py-3.5 rounded-xl hover:bg-slate-200 font-medium transition-colors">取消</button>
+                    <button id="btn-submit-tx" onclick="trySubmitTransaction()" class="flex-[2] bg-teal-500 text-white py-3.5 rounded-xl hover:bg-teal-600 font-bold transition-all shadow-md hover:shadow-lg flex justify-center items-center">校验并入账</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ledger-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col modal-enter overflow-hidden border border-white">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                <h3 class="text-2xl font-bold text-slate-800">账目流水清单 <span class="text-sm font-normal text-slate-400 ml-2">近 180 天</span></h3>
+                <button onclick="closeModal('ledger-modal')" class="text-slate-400 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex-grow overflow-auto bg-slate-50/30 p-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-left border-collapse text-sm whitespace-nowrap">
+                        <thead class="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
+                            <tr>
+                                <th class="p-4 font-bold text-slate-500">时间</th>
+                                <th class="p-4 font-bold text-slate-500">金额</th>
+                                <th class="p-4 font-bold text-slate-500">账户结余</th>
+                                <th class="p-4 font-bold text-slate-500">经手人</th>
+                                <th class="p-4 font-bold text-slate-500">记录出纳</th>
+                                <th class="p-4 font-bold text-slate-500 w-1/3">备注</th>
+                                <th class="p-4 font-bold text-slate-500 text-right">凭证</th>
+                                <th id="th-admin-action" class="p-4 font-bold text-rose-500 text-center hidden">最高管理操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-tbody" class="divide-y divide-slate-50">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="warning-modal" class="hidden fixed inset-0 bg-slate-900/40 z-[60] flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white/90 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-md w-full modal-enter text-center border border-white">
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">不可逆操作警告</h3>
+            <p class="text-slate-500 mb-6">接下来的交接流程将永久废弃当前密钥。<br><span class="font-bold text-rose-500">请确保现任出纳在场协助。</span></p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="closeModal('warning-modal')" class="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 font-medium">取消</button>
+                <button id="btn-warning-confirm" disabled class="flex-1 py-3 bg-rose-500 text-white rounded-xl opacity-50 cursor-not-allowed font-medium">阅读中 (5)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="key-generator-modal" class="hidden fixed inset-0 bg-slate-900/40 z-[60] flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full modal-enter text-center border border-white">
+            <h3 class="text-xl font-bold text-slate-800 mb-2">为下一任生成密钥</h3>
+            <p class="text-sm text-slate-500 mb-6">妥善发送给下一任，关闭后不会再次显示。</p>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl mb-6">
+                <p id="generated-key-display" class="text-3xl font-mono font-bold text-indigo-600 tracking-wider">XXX-XXX-XXX</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="closeModal('key-generator-modal')" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl hover:bg-slate-200 font-medium">关闭</button>
+                <button id="copy-key-btn" onclick="copyGeneratedKey()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl hover:bg-indigo-700 font-medium">复制密钥</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="transfer-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white/95 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-md w-full modal-enter border border-white">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">出纳权限交接</h3>
+            <div class="space-y-5">
+                <input type="text" id="old-name" placeholder="现任出纳姓名" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none text-slate-700">
+                <input type="password" id="old-key" placeholder="现任密钥 或 通用密钥" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none text-slate-700">
+                <input type="text" id="new-name" placeholder="新任出纳姓名" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none text-slate-700 mt-4">
+                <input type="password" id="new-key" placeholder="新密钥" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none text-slate-700">
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeModal('transfer-modal')" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl hover:bg-slate-200">取消</button>
+                    <button onclick="submitTransfer()" class="flex-[2] bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 font-bold">确认移交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center backdrop-blur-md p-4">
+        <div class="bg-white/95 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl max-w-sm w-full modal-enter border border-white">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center">安全登录</h3>
+            <input type="text" id="login-name" placeholder="出纳姓名 (通用密钥可留空)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 mb-4 outline-none text-slate-700">
+            <input type="password" id="login-key" placeholder="请输入有效密钥" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 mb-8 outline-none text-slate-700">
+            <button onclick="submitLogin()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl hover:bg-indigo-700 font-bold mb-3">登录管理</button>
+            <button onclick="closeModal('login-modal')" class="w-full bg-transparent text-slate-500 py-2 rounded-xl hover:bg-slate-50 font-medium">取消返回</button>
+        </div>
+    </div>
+
+    <div id="image-viewer-modal" class="hidden fixed inset-0 bg-slate-900/90 z-[90] flex items-center justify-center p-4 backdrop-blur-xl">
+        <button onclick="closeModal('image-viewer-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white bg-white/10 p-3 rounded-full backdrop-blur-md">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="viewer-img" src="" class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl border border-white/20">
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

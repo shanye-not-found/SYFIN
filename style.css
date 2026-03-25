@@ -1,0 +1,42 @@
+/* 自定义现代滚动条 */
+::-webkit-scrollbar { 
+    width: 6px; 
+    height: 6px; 
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb { 
+    background: #cbd5e1; 
+    border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+    background: #94a3b8; 
+}
+
+/* 模态框弹出的果冻效果动画 */
+.modal-enter { 
+    animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; 
+}
+
+@keyframes bounceIn { 
+    0% { 
+        opacity: 0; 
+        transform: scale(0.9) translateY(20px); 
+    } 
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+    } 
+}
+
+/* 强制隐藏 */
+.hidden { 
+    display: none !important; 
+}
+
+/* 选中文本颜色优化 */
+::selection {
+    background: #e0e7ff; /* indigo-100 */
+    color: #3730a3; /* indigo-800 */
+}
