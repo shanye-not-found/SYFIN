@@ -89,9 +89,14 @@ function generateRandomKey() {
     return `${key.slice(0,3)}-${key.slice(3,6)}-${key.slice(6,9)}`;
 }
 
-function generateAndShowKey() {
+async function generateAndShowKey() {
     const newKey = generateRandomKey();
     document.getElementById('generated-key-display').innerText = newKey;
+    
+    // 【新增安全逻辑】将生成的密钥立刻进行哈希加密，并暂存在前端本地临时区
+    const hashedKey = await hashString(newKey);
+    localStorage.setItem('club_pending_key_hash', hashedKey);
+    
     openModal('key-generator-modal');
 }
 
@@ -175,6 +180,7 @@ function startRegisterFlow() {
     }, 1000);
 }
 
+/* ================= 注册交接 ================= */
 async function submitTransfer() {
     const oldName = document.getElementById('old-name').value.trim();
     const oldKey = document.getElementById('old-key').value.trim();
@@ -183,6 +189,7 @@ async function submitTransfer() {
 
     if (!oldKey || !newName || !newKey) return alert('必填信息不完整');
 
+    // 1. 验证旧权限 (现任验证)
     const hashedOld = await hashString(oldKey);
     let isAuthorized = false;
 
@@ -196,21 +203,34 @@ async function submitTransfer() {
         return alert('授权失败：现任出纳姓名或密钥错误！');
     }
 
-    // 覆盖新哈希并同步云端
-    state.activeKeyHash = await hashString(newKey);
+    // 2. 【新增安全逻辑】严格验证新密钥是否为系统刚刚生成的那个
+    const hashedNew = await hashString(newKey);
+    const pendingHash = localStorage.getItem('club_pending_key_hash');
+    
+    if (!pendingHash) {
+        return alert('非法交接：请先由现任出纳点击“生成交接密钥”！');
+    }
+    if (hashedNew !== pendingHash) {
+        return alert('安全拦截：新密钥无效！必须且只能使用系统刚刚生成的专属交接密钥。');
+    }
+
+    // 3. 验证通过，执行交接并同步至云端
+    state.activeKeyHash = hashedNew;
     state.currentCashier = newName;
     state.lastUpdated = new Date().toLocaleString('zh-CN');
     
     const success = await saveData();
     
     if (success) {
+        // 清除前端的临时验证区，防止重复利用
+        localStorage.removeItem('club_pending_key_hash'); 
+        
         logout();
         closeModal('transfer-modal');
         ['old-name', 'old-key', 'new-name', 'new-key'].forEach(id => document.getElementById(id).value = '');
-        alert(`权限移交成功！\n新出纳已更新为：${newName}\n旧密钥已永久作废，系统已自动退出登录，请新出纳重新登录。`);
+        alert(`权限移交成功！\n新出纳已更新为：${newName}\n旧密码已永久作废，系统已自动退出登录，请新出纳重新登录。`);
     }
 }
-
 /* ================= 云端动账逻辑 ================= */
 async function uploadFilesToCloud(files) {
     const uploadedUrls = [];
@@ -418,6 +438,50 @@ function renderLedger() {
         tbody.appendChild(tr);
     });
 }
+/* ================= 后台静默刷新引擎 (防抖优化版) ================= */
+let lastFetchTime = 0;
+const COOLDOWN_MS = 5000; // 设置 5 秒冷却时间（5000毫秒）
 
+async function silentlyFetchLatestData() {
+    const now = Date.now();
+    
+    // 【防御性编程】如果距离上次请求还不到 5 秒，直接拦截，绝不发请求
+    if (now - lastFetchTime < COOLDOWN_MS) {
+        return; 
+    }
+    
+    try {
+        const response = await fetch(`${WORKER_API_URL}/ledger`);
+        lastFetchTime = Date.now(); // 请求成功后，更新最后一次请求的时间
+        
+        if (response.ok) {
+            const newData = await response.json();
+            
+            if (newData.lastUpdated !== state.lastUpdated) {
+                state = newData;
+                updateUI();
+                
+                const ledgerModal = document.getElementById('ledger-modal');
+                if (!ledgerModal.classList.contains('hidden')) {
+                    renderLedger();
+                }
+                console.log("后台静默同步完成");
+            }
+        }
+    } catch (e) {
+        console.warn("静默刷新由于网络原因跳过");
+    }
+}
+
+// 监听器
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        silentlyFetchLatestData();
+    }
+});
+
+window.addEventListener("focus", silentlyFetchLatestData);
+
+setInterval(silentlyFetchLatestData, 3 * 60 * 1000);
 // 启动系统
 initSystem();
