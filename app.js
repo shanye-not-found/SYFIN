@@ -261,7 +261,7 @@ function trySubmitTransaction() {
     const amountRegex = /^[+-]\d+(\.\d{1,2})?$/;
     
     if (!amountRegex.test(amountStr)) {
-        return alert('金额格式错误！必须以 + 或 - 开头，例如 +100 或 -50.50');
+        return alert('金额格式错误！必须以 + 或 - 开头，并且以两位小数作为最高精度。');
     }
     if (!handler) return alert('请填写经手人姓名！');
 
