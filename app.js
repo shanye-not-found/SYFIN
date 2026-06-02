@@ -361,10 +361,19 @@ async function deleteTransaction(id) {
     }
 }
 
-/* ================= 渲染与交互 ================= */
-function viewImage(urlStr) {
-    document.getElementById('viewer-img').src = urlStr;
-    openModal('image-viewer-modal');
+/* ================= 渲染与交互 (已升级支持 PDF) ================= */
+
+// 【新增智能文档查看器】
+function viewDocument(urlStr) {
+    // 判断链接后缀是否为 pdf
+    if (urlStr.toLowerCase().split('?')[0].endsWith('.pdf')) {
+        // 如果是 PDF，直接在新标签页打开，利用浏览器原生极其强大的 PDF 渲染引擎
+        window.open(urlStr, '_blank');
+    } else {
+        // 如果是图片，沿用原来的炫酷模态框
+        document.getElementById('viewer-img').src = urlStr;
+        openModal('image-viewer-modal');
+    }
 }
 
 function renderLedger() {
@@ -400,11 +409,17 @@ function renderLedger() {
         
         let imgHtml = '-';
         if (tx.imagesData && tx.imagesData.length > 0) {
-            imgHtml = tx.imagesData.map((data, idx) => 
-                `<button onclick="viewImage('${data}')" class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium mr-1 mb-1 transition-colors">
-                    图 ${idx+1}
-                </button>`
-            ).join('');
+            imgHtml = tx.imagesData.map((data, idx) => {
+                // 【升级：动态按钮文字】智能判断是 PDF 还是 图片
+                const isPdf = data.toLowerCase().split('?')[0].endsWith('.pdf');
+                const btnText = isPdf ? `📄 PDF ${idx+1}` : `🖼️ 图 ${idx+1}`;
+                const btnColor = isPdf ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100';
+                
+                // 注意这里把 onclick 的函数改成了 viewDocument
+                return `<button onclick="viewDocument('${data}')" class="inline-flex items-center gap-1 ${btnColor} px-2 py-1 rounded text-xs font-medium mr-1 mb-1 transition-colors">
+                    ${btnText}
+                </button>`;
+            }).join('');
         }
 
         const isMasterOp = tx.cashier === '最高管理员 (Master)';
